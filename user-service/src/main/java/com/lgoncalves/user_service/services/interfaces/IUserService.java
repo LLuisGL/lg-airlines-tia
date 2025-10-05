@@ -5,6 +5,4 @@ import com.lgoncalves.user_service.utils.ICrud;
 
 public interface IUserService extends ICrud<UserDTO> {
 
-
-
 }

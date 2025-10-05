@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Entity
 @Table(name = "Usuarios")
@@ -26,6 +28,8 @@ public class UserEntity implements IMapper<UserDTO> {
     @Column(name = "clave", updatable = true, nullable = false)
     private String clave;
 
+    @OneToMany(mappedBy = "userEntity", fetch = FetchType.LAZY)
+    private List<TokenEntity> tokens;
 
     @Override
     public UserDTO getDTO() {
