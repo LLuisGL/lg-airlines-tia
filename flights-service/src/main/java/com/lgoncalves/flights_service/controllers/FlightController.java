@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/vuelos")
@@ -37,6 +39,14 @@ public class FlightController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(flightDTO);
+    }
+
+    @GetMapping("/decrementar/{id}")
+    public ResponseEntity<Map<String, String>> decFlightDisponibility(@PathVariable String id){
+        flightService.decrementarDisponibilidad(id);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "successfully");
+        return ResponseEntity.ok(response);
     }
 
 

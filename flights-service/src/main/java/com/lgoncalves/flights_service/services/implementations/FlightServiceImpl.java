@@ -72,4 +72,11 @@ public class FlightServiceImpl implements IFlightService {
                 .map(FlightEntity::getDTO)
                 .toList();
     }
+
+    @Override
+    public void decrementarDisponibilidad(String vuelo_id) {
+        FlightEntity flightEntity = flightRepository.findById(vuelo_id).orElseThrow(() -> new RuntimeException("Vuelo no encontrado"));
+        flightEntity.setDisponibilidad(flightEntity.getDisponibilidad() - 1);
+        this.flightRepository.save(flightEntity);
+    }
 }

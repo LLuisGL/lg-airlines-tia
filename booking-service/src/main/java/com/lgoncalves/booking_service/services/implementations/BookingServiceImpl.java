@@ -33,12 +33,14 @@ public class BookingServiceImpl implements IBookingService {
     public BookingDTO add(BookingDTO bookingDTO) {
 
         ResponseEntity<FlightDTO> responseEntity = this.flightsREST.getById(bookingDTO.getVuelo_id());
+        FlightDTO flight = responseEntity.getBody();
         ResponseEntity<UserDTO> responseEntity2 = this.userREST.getById(bookingDTO.getUsuario_id());
 
-        if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity2.getStatusCode().is2xxSuccessful()){
+        if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity2.getStatusCode().is2xxSuccessful() && flight != null && flight.getDisponibilidad() > 0){
             log.info("Add flight {}", bookingDTO );
             BookingEntity bookingEntity = new BookingEntity();
             bookingEntity.setDTO(bookingDTO);
+            this.flightsREST.decFlightDisponibility(bookingDTO.getVuelo_id());
             return this.bookingRepository.save(bookingEntity).getDTO();
         } else{
             log.warn("Error booking flight: vuelo_id not valid. Id {}", bookingDTO.getVuelo_id());
