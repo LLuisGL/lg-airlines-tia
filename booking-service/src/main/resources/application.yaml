@@ -1,3 +1,7 @@
+application:
+  security:
+    jwt:
+      secret-key: 2u8Chpo73eFHahZkh9CkyNgZvAAn4efrGDGTsNcgJxer8esjsFD9orDMZpukgU2E
 spring:
   application:
     name: booking-service
@@ -25,3 +29,4 @@ feign:
     info:
       id: user-service
       url: http://localhost:8087/api/usuarios
+
