@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 import java.sql.Date;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class FlightDTO {
 
     private String id;

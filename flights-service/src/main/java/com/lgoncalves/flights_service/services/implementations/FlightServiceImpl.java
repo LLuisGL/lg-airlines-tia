@@ -4,21 +4,29 @@ import com.lgoncalves.flights_service.dtos.FlightDTO;
 import com.lgoncalves.flights_service.entities.FlightEntity;
 import com.lgoncalves.flights_service.repositories.IFlightRepository;
 import com.lgoncalves.flights_service.services.interfaces.IFlightService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 @Log4j2
 @Service
+@RequiredArgsConstructor
 public class FlightServiceImpl implements IFlightService {
 
-    private IFlightRepository flightRepository;
+    private final IFlightRepository flightRepository;
 
     @Override
     public List<FlightDTO> getAll() {
-        return this.flightRepository.findAll().stream().map(FlightEntity::getDTO).toList();
+        return this.flightRepository
+                .findAll()
+                .stream()
+                .map(FlightEntity::getDTO)
+                .toList();
     }
 
     @Override
@@ -54,5 +62,14 @@ public class FlightServiceImpl implements IFlightService {
             return FlightDTO.builder().build();
         }
         return flightEntity.get().getDTO();
+    }
+
+    @Override
+    public List<FlightDTO> filtrarVuelos(String origen, String destino, LocalDate fecha) {
+        return flightRepository
+                .findByOrigenAndDestinoAndFecha(origen, destino, Date.valueOf(fecha))
+                .stream()
+                .map(FlightEntity::getDTO)
+                .toList();
     }
 }

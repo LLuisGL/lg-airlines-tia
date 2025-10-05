@@ -6,11 +6,13 @@ import com.lgoncalves.flights_service.utils.ICrud;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface IFlightRepository extends JpaRepository<FlightEntity, String> {
 
-
+    List<FlightEntity> findByOrigenAndDestinoAndFecha(String origen, String destino, Date fecha);
 
 }
