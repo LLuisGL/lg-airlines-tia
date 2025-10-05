@@ -1,0 +1,19 @@
+package com.lgoncalves.user_service.dtos;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class UserDTO {
+
+    private String id;
+    private String nombre;
+    private String correo;
+    private String clave;
+
+}

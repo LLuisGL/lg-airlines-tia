@@ -1,8 +1,10 @@
 package com.lgoncalves.booking_service.services.implementations;
 
 import com.lgoncalves.booking_service.clients.IFlightsREST;
+import com.lgoncalves.booking_service.clients.IUserREST;
 import com.lgoncalves.booking_service.dtos.BookingDTO;
 import com.lgoncalves.booking_service.dtos.FlightDTO;
+import com.lgoncalves.booking_service.dtos.UserDTO;
 import com.lgoncalves.booking_service.entities.BookingEntity;
 import com.lgoncalves.booking_service.repositories.IBookingRepository;
 import com.lgoncalves.booking_service.services.interfaces.IBookingService;
@@ -20,6 +22,7 @@ public class BookingServiceImpl implements IBookingService {
 
     private final IBookingRepository bookingRepository;
     private final IFlightsREST flightsREST;
+    private final IUserREST userREST;
 
     @Override
     public List<BookingDTO> getAll() {
@@ -28,15 +31,18 @@ public class BookingServiceImpl implements IBookingService {
 
     @Override
     public BookingDTO add(BookingDTO bookingDTO) {
+
         ResponseEntity<FlightDTO> responseEntity = this.flightsREST.getById(bookingDTO.getVuelo_id());
-        if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity.getBody() != null){
+        ResponseEntity<UserDTO> responseEntity2 = this.userREST.getById(bookingDTO.getUsuario_id());
+
+        if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity2.getStatusCode().is2xxSuccessful()){
             log.info("Add flight {}", bookingDTO );
             BookingEntity bookingEntity = new BookingEntity();
             bookingEntity.setDTO(bookingDTO);
             return this.bookingRepository.save(bookingEntity).getDTO();
         } else{
             log.warn("Error booking flight: vuelo_id not valid. Id {}", bookingDTO.getVuelo_id());
-            throw new RuntimeException("Vuelo no encontrado con id: " + bookingDTO.getVuelo_id());
+            throw new RuntimeException("Vuelo no encontrado con id_vuelo: " + bookingDTO.getVuelo_id() + ", id_usuario: " + bookingDTO.getUsuario_id());
         }
 
     }
