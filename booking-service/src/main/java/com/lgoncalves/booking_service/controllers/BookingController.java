@@ -18,6 +18,11 @@ public class BookingController {
 
     private final IBookingService bookingService;
 
+    @GetMapping("/all")
+    public ResponseEntity<List<BookingDTO>> getAllBookings(){
+        return ResponseEntity.ok(bookingService.getAll());
+    }
+
     @PostMapping
     public ResponseEntity<BookingDTO> generateBooking(@RequestBody BookingDTO bookingDTO){
         BookingDTO booking = bookingService.add(bookingDTO);

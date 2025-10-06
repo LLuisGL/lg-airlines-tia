@@ -33,7 +33,11 @@ public class BookingServiceImpl implements IBookingService {
 
     @Override
     public List<BookingDTO> getAll() {
-        return List.of();
+        return this.bookingRepository
+                .findAll()
+                .stream()
+                .map(BookingEntity::getDTO)
+                .toList();
     }
 
     @Override
@@ -57,7 +61,7 @@ public class BookingServiceImpl implements IBookingService {
         }
 
         List<BookingEntity> bookingEntities = bookingRepository.findByUsuarioIdAndVueloId(bookingDTO.getUsuario_id(), bookingDTO.getVuelo_id());
-        if (!bookingEntities.isEmpty()) throw new ReserveAlreadyRegisteredException("Ya se ha registrado anteriormente esta reserva");
+        if (!bookingEntities.isEmpty() && !bookingEntities.getFirst().getDTO().getEstado().equals("cancelado")) throw new ReserveAlreadyRegisteredException("Ya se ha registrado anteriormente esta reserva");
 
         BookingEntity bookingEntity = new BookingEntity();
         bookingEntity.setDTO(bookingDTO);
@@ -65,16 +69,27 @@ public class BookingServiceImpl implements IBookingService {
             ResponseEntity<FlightDTO> responseEntity3 = this.flightsREST.decFlightDisponibility(bookingDTO.getVuelo_id(), false);
             if (!responseEntity3.getStatusCode().is2xxSuccessful())
                 throw new FlightMaxCapacityException("El vuelo ha llegado a su máxima capacidad");
-        }catch(FeignException.Conflict ex){
+        } catch (FeignException.Conflict ex) {
             throw new FlightMaxCapacityException("El vuelo ha llegado a su máxima capacidad");
         }
-        return this.bookingRepository.save(bookingEntity).getDTO();
+
+        BookingDTO bookingDTO1;
+
+        if(bookingEntities.getFirst().getDTO().getEstado().equals("cancelado")){
+            bookingDTO1 = this.update(bookingEntities.getFirst().getDTO().getId(),bookingEntities.getFirst().getDTO());
+        } else {
+            bookingDTO1 = this.bookingRepository.save(bookingEntity).getDTO();
+        }
+        return bookingDTO1;
 
     }
 
     @Override
     public BookingDTO update(String id, BookingDTO bookingDTO) {
-        return null;
+        BookingEntity flightEntity = bookingRepository.findById(id).orElseThrow(() -> new FlightNotFoundException("Reserva no encontrada."));
+        flightEntity.setDTO(bookingDTO);
+        flightEntity.setEstado("activo");
+        return this.bookingRepository.save(flightEntity).getDTO();
     }
 
     @Override
@@ -82,7 +97,7 @@ public class BookingServiceImpl implements IBookingService {
         log.info("Removing flight id {}", id);
         BookingEntity bookingEntity = bookingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Booking no encontrado"));
-        bookingEntity.setEstado("Cancelado");
+        bookingEntity.setEstado("cancelado");
         ResponseEntity<FlightDTO> responseEntity3 = this.flightsREST.decFlightDisponibility(bookingEntity.getDTO().getVuelo_id(), true);
         bookingRepository.save(bookingEntity);
     }

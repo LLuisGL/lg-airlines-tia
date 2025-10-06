@@ -29,6 +29,11 @@ public class FlightController {
         return ResponseEntity.ok(vuelos);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<FlightDTO>> getAllBookings(){
+        return ResponseEntity.ok(flightService.getAll());
+    }
+
     @GetMapping("/id/{id}")
     public ResponseEntity<FlightDTO> getFlightById(@PathVariable String id){
         FlightDTO flightDTO = flightService.getById(id);

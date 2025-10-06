@@ -26,7 +26,11 @@ public class UserImplementation implements IUserService {
 
     @Override
     public List<UserDTO> getAll() {
-        return List.of();
+        return this.userRepository
+                .findAll()
+                .stream()
+                .map(UserEntity::getDTO)
+                .toList();
     }
 
     @Override

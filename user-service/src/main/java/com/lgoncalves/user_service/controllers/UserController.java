@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/usuarios")
 @RequiredArgsConstructor
@@ -23,6 +25,11 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(userDTO);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<UserDTO>> getAllBookings(){
+        return ResponseEntity.ok(userService.getAll());
     }
 
 
