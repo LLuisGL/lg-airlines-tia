@@ -1,0 +1,53 @@
+{
+	"info": {
+		"_postman_id": "61411ff0-a0ee-4c40-9dc6-880ef9abb636",
+		"name": "Flights",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49022212",
+		"_collection_link": "https://lluisgl-6837372.postman.co/workspace/Luis-Goncalves's-Workspace~11480980-1db4-46b0-84bb-ba58a840bc92/collection/49022212-61411ff0-a0ee-4c40-9dc6-880ef9abb636?action=share&source=collection_link&creator=49022212"
+	},
+	"item": [
+		{
+			"name": "Obtener Vuelos",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Filtrar Vuelos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8085/api/vuelos?origen=UUS&destino=HRB&fecha=2025-08-18",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"api",
+						"vuelos"
+					],
+					"query": [
+						{
+							"key": "origen",
+							"value": "UUS"
+						},
+						{
+							"key": "destino",
+							"value": "HRB"
+						},
+						{
+							"key": "fecha",
+							"value": "2025-08-18"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

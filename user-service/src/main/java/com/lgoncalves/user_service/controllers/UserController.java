@@ -1,5 +1,6 @@
 package com.lgoncalves.user_service.controllers;
 
+import com.lgoncalves.user_service.dtos.BookingDTO;
 import com.lgoncalves.user_service.dtos.UserDTO;
 import com.lgoncalves.user_service.services.interfaces.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,11 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(userDTO);
+    }
+
+    @GetMapping("/{id}/reservas")
+    public ResponseEntity<List<BookingDTO>> getReservesByUserId(@PathVariable String id){
+        return ResponseEntity.ok(userService.getReservesByUserId(id));
     }
 
     @GetMapping("/all")

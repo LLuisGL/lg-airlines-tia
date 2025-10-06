@@ -75,7 +75,7 @@ public class BookingServiceImpl implements IBookingService {
 
         BookingDTO bookingDTO1;
 
-        if(bookingEntities.getFirst().getDTO().getEstado().equals("cancelado")){
+        if(!bookingEntities.isEmpty() && bookingEntities.getFirst().getDTO().getEstado().equals("cancelado")){
             bookingDTO1 = this.update(bookingEntities.getFirst().getDTO().getId(),bookingEntities.getFirst().getDTO());
         } else {
             bookingDTO1 = this.bookingRepository.save(bookingEntity).getDTO();

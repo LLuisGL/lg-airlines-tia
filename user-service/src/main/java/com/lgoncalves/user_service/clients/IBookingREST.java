@@ -11,7 +11,7 @@ import java.util.List;
 @FeignClient(name = "${feign.booking.info.id}", url = "${feign.booking.info.url}")
 public interface IBookingREST {
 
-    @GetMapping("/{id}")
-    ResponseEntity<List<BookingDTO>> getReservesByUserId(@PathVariable String user_id);
+    @GetMapping("/get/{id}")
+    ResponseEntity<List<BookingDTO>> getReservesByUserId(@PathVariable String id);
 
 }

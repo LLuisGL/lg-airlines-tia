@@ -37,7 +37,7 @@ public class BookingController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<List<BookingDTO>> getReservesByUserId(@PathVariable String id){
         List<BookingDTO> bookingDTOS = bookingService.getReservesById(id);
         return ResponseEntity.ok(bookingDTOS);
