@@ -11,5 +11,5 @@ import java.util.List;
 public interface IFlightService extends ICrud<FlightDTO> {
 
     List<FlightDTO> filtrarVuelos(String origen, String destino, LocalDate fecha);
-    void decrementarDisponibilidad(String vuelo_id);
+    FlightDTO decrementarDisponibilidad(String vuelo_id);
 }

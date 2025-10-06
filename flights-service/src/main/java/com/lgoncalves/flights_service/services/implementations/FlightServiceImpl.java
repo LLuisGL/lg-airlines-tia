@@ -4,6 +4,8 @@ import com.lgoncalves.flights_service.dtos.FlightDTO;
 import com.lgoncalves.flights_service.entities.FlightEntity;
 import com.lgoncalves.flights_service.repositories.IFlightRepository;
 import com.lgoncalves.flights_service.services.interfaces.IFlightService;
+import com.lgoncalves.flights_service.exceptions.FlightMaxCapacityException;
+import com.lgoncalves.flights_service.exceptions.FlightNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -40,7 +42,7 @@ public class FlightServiceImpl implements IFlightService {
     @Override
     public FlightDTO update(String id, FlightDTO flightDTO) {
         log.info("Update flight {}", flightDTO );
-        FlightEntity flightEntity = flightRepository.findById(id).orElseThrow(() -> new RuntimeException("Vuelo no encontrado"));
+        FlightEntity flightEntity = flightRepository.findById(id).orElseThrow(() -> new FlightNotFoundException("Vuelo no encontrado."));
         flightEntity.setDTO(flightDTO);
         return this.flightRepository.save(flightEntity).getDTO();
     }
@@ -48,7 +50,7 @@ public class FlightServiceImpl implements IFlightService {
     @Override
     public void delete(String id) {
         if (!flightRepository.existsById(id)) {
-            throw new RuntimeException("Vuelo no encontrado con id: " + id);
+            throw new FlightNotFoundException("Vuelo no encontrado. Id: " + id);
         }
 
         flightRepository.deleteById(id);
@@ -59,7 +61,7 @@ public class FlightServiceImpl implements IFlightService {
         log.info("Get flight by id {}", id);
         Optional<FlightEntity> flightEntity = this.flightRepository.findById(id);
         if(flightEntity.isEmpty()){
-            return FlightDTO.builder().build();
+            throw new FlightNotFoundException("Vuelo no encontrado. Id: " + id);
         }
         return flightEntity.get().getDTO();
     }
@@ -74,9 +76,12 @@ public class FlightServiceImpl implements IFlightService {
     }
 
     @Override
-    public void decrementarDisponibilidad(String vuelo_id) {
-        FlightEntity flightEntity = flightRepository.findById(vuelo_id).orElseThrow(() -> new RuntimeException("Vuelo no encontrado"));
+    public FlightDTO decrementarDisponibilidad(String vuelo_id) {
+        FlightEntity flightEntity = flightRepository.findById(vuelo_id).orElseThrow(() -> new FlightNotFoundException("Vuelo no encontrado"));
+
+        if(flightEntity.getDisponibilidad() <= 0 ) throw new FlightMaxCapacityException("El vuelo ya no cuenta con disponibilidad.");
+
         flightEntity.setDisponibilidad(flightEntity.getDisponibilidad() - 1);
-        this.flightRepository.save(flightEntity);
+        return this.flightRepository.save(flightEntity).getDTO();
     }
 }

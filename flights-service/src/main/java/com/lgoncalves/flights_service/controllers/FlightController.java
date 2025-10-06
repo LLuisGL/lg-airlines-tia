@@ -1,15 +1,12 @@
 package com.lgoncalves.flights_service.controllers;
 
 import com.lgoncalves.flights_service.dtos.FlightDTO;
-import com.lgoncalves.flights_service.entities.FlightEntity;
 import com.lgoncalves.flights_service.services.interfaces.IFlightService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -35,18 +32,13 @@ public class FlightController {
     @GetMapping("/id/{id}")
     public ResponseEntity<FlightDTO> getFlightById(@PathVariable String id){
         FlightDTO flightDTO = flightService.getById(id);
-        if(flightDTO.getId() == null || flightDTO.getId().isEmpty()){
-            return ResponseEntity.notFound().build();
-        }
         return ResponseEntity.ok(flightDTO);
     }
 
     @GetMapping("/decrementar/{id}")
-    public ResponseEntity<Map<String, String>> decFlightDisponibility(@PathVariable String id){
-        flightService.decrementarDisponibilidad(id);
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "successfully");
-        return ResponseEntity.ok(response);
+    public ResponseEntity<FlightDTO> decFlightDisponibility(@PathVariable String id){
+        FlightDTO flightDTO = flightService.decrementarDisponibilidad(id);
+        return ResponseEntity.ok(flightDTO);
     }
 
 

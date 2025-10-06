@@ -16,6 +16,6 @@ public interface IFlightsREST {
 
 
     @GetMapping("/decrementar/{vuelo_id}")
-    ResponseEntity<Map<String, String>> decFlightDisponibility(@PathVariable String vuelo_id);
+    ResponseEntity<FlightDTO> decFlightDisponibility(@PathVariable String vuelo_id);
 
 }

@@ -6,14 +6,22 @@ import com.lgoncalves.booking_service.dtos.BookingDTO;
 import com.lgoncalves.booking_service.dtos.FlightDTO;
 import com.lgoncalves.booking_service.dtos.UserDTO;
 import com.lgoncalves.booking_service.entities.BookingEntity;
+import com.lgoncalves.booking_service.exceptions.flight.FlightMaxCapacityException;
+import com.lgoncalves.booking_service.exceptions.flight.FlightNotFoundException;
+import com.lgoncalves.booking_service.exceptions.user.UserNotFoundException;
 import com.lgoncalves.booking_service.repositories.IBookingRepository;
 import com.lgoncalves.booking_service.services.interfaces.IBookingService;
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Log4j2
 @Service
@@ -33,19 +41,27 @@ public class BookingServiceImpl implements IBookingService {
     public BookingDTO add(BookingDTO bookingDTO) {
 
         ResponseEntity<FlightDTO> responseEntity = this.flightsREST.getById(bookingDTO.getVuelo_id());
-        FlightDTO flight = responseEntity.getBody();
         ResponseEntity<UserDTO> responseEntity2 = this.userREST.getById(bookingDTO.getUsuario_id());
 
-        if (responseEntity.getStatusCode().is2xxSuccessful() && responseEntity2.getStatusCode().is2xxSuccessful() && flight != null && flight.getDisponibilidad() > 0){
-            log.info("Add flight {}", bookingDTO );
-            BookingEntity bookingEntity = new BookingEntity();
-            bookingEntity.setDTO(bookingDTO);
-            this.flightsREST.decFlightDisponibility(bookingDTO.getVuelo_id());
-            return this.bookingRepository.save(bookingEntity).getDTO();
-        } else{
-            log.warn("Error booking flight: vuelo_id not valid. Id {}", bookingDTO.getVuelo_id());
-            throw new RuntimeException("Vuelo no encontrado con id_vuelo: " + bookingDTO.getVuelo_id() + ", id_usuario: " + bookingDTO.getUsuario_id());
+        if (!responseEntity.getStatusCode().is2xxSuccessful()) {
+            if (responseEntity.getStatusCode().equals(NOT_FOUND)) {
+                throw new FlightNotFoundException("Vuelo no encontrado.");
+            }
+            throw new RuntimeException("Error desconocido al obtener el vuelo: " + responseEntity.getStatusCode());
         }
+
+        if (!responseEntity2.getStatusCode().is2xxSuccessful()) {
+            if (responseEntity2.getStatusCode().equals(NOT_FOUND)) {
+                throw new UserNotFoundException("Usuario no encontrado");
+            }
+            throw new RuntimeException("Error desconocido al obtener el usuario: " + responseEntity2.getStatusCode());
+        }
+
+        BookingEntity bookingEntity = new BookingEntity();
+        bookingEntity.setDTO(bookingDTO);
+        ResponseEntity<FlightDTO> responseEntity3 = this.flightsREST.decFlightDisponibility(bookingDTO.getVuelo_id());
+        if(!responseEntity3.getStatusCode().is2xxSuccessful()) throw new FlightMaxCapacityException("El vuelo ha llegado a su máxima capacidad");
+        return this.bookingRepository.save(bookingEntity).getDTO();
 
     }
 

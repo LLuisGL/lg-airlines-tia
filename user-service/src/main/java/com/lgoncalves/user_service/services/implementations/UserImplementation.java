@@ -2,6 +2,7 @@ package com.lgoncalves.user_service.services.implementations;
 
 import com.lgoncalves.user_service.dtos.UserDTO;
 import com.lgoncalves.user_service.entities.UserEntity;
+import com.lgoncalves.user_service.exceptions.user.UserNotFoundException;
 import com.lgoncalves.user_service.repositories.IUserRepository;
 import com.lgoncalves.user_service.services.interfaces.IUserService;
 import lombok.AllArgsConstructor;
@@ -40,11 +41,8 @@ public class UserImplementation implements IUserService {
 
     @Override
     public UserDTO getById(String id) {
-        log.info("Get flight by id {}", id);
         Optional<UserEntity> userEntity = this.userRepository.findById(id);
-        if(userEntity.isEmpty()){
-            return UserDTO.builder().build();
-        }
+        if(userEntity.isEmpty()) throw new UserNotFoundException("Usuario no encontrado.");
         return userEntity.get().getDTO();
     }
 }
