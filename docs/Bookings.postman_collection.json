@@ -1,17 +1,36 @@
 {
 	"info": {
-		"_postman_id": "aafa974b-8624-4ad3-9c6d-3957c666bca1",
+		"_postman_id": "7e6469f0-4793-452f-9313-d2d3cbcef995",
 		"name": "Bookings",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "49022212",
-		"_collection_link": "https://lluisgl-6837372.postman.co/workspace/Luis-Goncalves's-Workspace~11480980-1db4-46b0-84bb-ba58a840bc92/collection/49022212-aafa974b-8624-4ad3-9c6d-3957c666bca1?action=share&source=collection_link&creator=49022212"
+		"_collection_link": "https://lluisgl-6837372.postman.co/workspace/Luis-Goncalves's-Workspace~11480980-1db4-46b0-84bb-ba58a840bc92/collection/49022212-7e6469f0-4793-452f-9313-d2d3cbcef995?action=share&source=collection_link&creator=49022212"
 	},
 	"item": [
 		{
 			"name": "Obtener Rerservas",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{JWToken}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8086/api/reservas/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8086",
+					"path": [
+						"api",
+						"reservas",
+						"all"
+					]
+				}
 			},
 			"response": []
 		},

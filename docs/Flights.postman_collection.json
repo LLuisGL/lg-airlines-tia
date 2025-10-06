@@ -1,17 +1,30 @@
 {
 	"info": {
-		"_postman_id": "61411ff0-a0ee-4c40-9dc6-880ef9abb636",
+		"_postman_id": "714a058b-9882-4226-88ab-ec7603dd6e2e",
 		"name": "Flights",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "49022212",
-		"_collection_link": "https://lluisgl-6837372.postman.co/workspace/Luis-Goncalves's-Workspace~11480980-1db4-46b0-84bb-ba58a840bc92/collection/49022212-61411ff0-a0ee-4c40-9dc6-880ef9abb636?action=share&source=collection_link&creator=49022212"
+		"_collection_link": "https://lluisgl-6837372.postman.co/workspace/Luis-Goncalves's-Workspace~11480980-1db4-46b0-84bb-ba58a840bc92/collection/49022212-714a058b-9882-4226-88ab-ec7603dd6e2e?action=share&source=collection_link&creator=49022212"
 	},
 	"item": [
 		{
 			"name": "Obtener Vuelos",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8085/api/vuelos/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"api",
+						"vuelos",
+						"all"
+					]
+				}
 			},
 			"response": []
 		},
