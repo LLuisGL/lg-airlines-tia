@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
@@ -82,5 +83,14 @@ public class BookingServiceImpl implements IBookingService {
     @Override
     public BookingDTO getById(String id) {
         return null;
+    }
+
+    @Override
+    public List<BookingDTO> getReservesById(String id) {
+        return bookingRepository
+                .findByUsuarioId(id)
+                .stream()
+                .map(BookingEntity::getDTO)
+                .toList();
     }
 }

@@ -22,7 +22,7 @@ public class TokenEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     public String id;
 
-    @Column(unique = true)
+    @Column(unique = true, length = 1000)
     public String token;
     @Enumerated(EnumType.STRING)
     public TokenType tokenType = TokenType.BEARER;

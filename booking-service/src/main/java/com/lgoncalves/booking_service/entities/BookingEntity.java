@@ -18,10 +18,10 @@ public class BookingEntity implements IMapper<BookingDTO> {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)
     private String id;
-    @Column(name = "usuario_id", updatable = true, nullable = false)
-    private String usuario_id;
+    @Column(name = "usuarioId", updatable = true, nullable = false)
+    private String usuarioId;
     @Column(name = "vuelo_id", updatable = true, nullable = false)
-    private String vuelo_id;
+    private String vueloId;
     @Column(name = "estado", updatable = true, nullable = false)
     private String estado = "activo";
 
@@ -29,9 +29,9 @@ public class BookingEntity implements IMapper<BookingDTO> {
     public BookingDTO getDTO() {
         return BookingDTO.builder()
                 .id(this.id)
-                .vuelo_id(this.vuelo_id)
+                .vuelo_id(this.vueloId)
                 .estado(this.estado)
-                .usuario_id(this.usuario_id)
+                .usuario_id(this.usuarioId)
                 .build();
     }
 
@@ -39,7 +39,7 @@ public class BookingEntity implements IMapper<BookingDTO> {
     public void setDTO(BookingDTO bookingDTO) {
         this.id = bookingDTO.getId();
         this.estado = (bookingDTO.getEstado() != null) ? bookingDTO.getEstado() : "activo";
-        this.vuelo_id = bookingDTO.getVuelo_id();
-        this.usuario_id = bookingDTO.getUsuario_id();
+        this.vueloId = bookingDTO.getVuelo_id();
+        this.usuarioId = bookingDTO.getUsuario_id();
     }
 }

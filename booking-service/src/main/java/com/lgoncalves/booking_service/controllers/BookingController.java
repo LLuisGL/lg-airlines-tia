@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -29,6 +30,13 @@ public class BookingController {
         Map<String, String> response = new HashMap<>();
         response.put("message", "successfully");
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<List<BookingDTO>> getReservesByUserId(@PathVariable String id){
+        List<BookingDTO> bookingDTOS = bookingService.getReservesById(id);
+        return ResponseEntity.ok(bookingDTOS);
+
     }
 
 }
