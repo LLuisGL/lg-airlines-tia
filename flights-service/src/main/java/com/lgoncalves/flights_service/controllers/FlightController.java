@@ -35,9 +35,9 @@ public class FlightController {
         return ResponseEntity.ok(flightDTO);
     }
 
-    @GetMapping("/decrementar/{id}")
-    public ResponseEntity<FlightDTO> decFlightDisponibility(@PathVariable String id){
-        FlightDTO flightDTO = flightService.decrementarDisponibilidad(id);
+    @GetMapping("/cambiarDisponibilidad/{id}")
+    public ResponseEntity<FlightDTO> decFlightDisponibility(@PathVariable String id, @RequestParam boolean isIncrement){
+        FlightDTO flightDTO = flightService.cambiarDisponibilidad(id,isIncrement);
         return ResponseEntity.ok(flightDTO);
     }
 

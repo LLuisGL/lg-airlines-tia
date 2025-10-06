@@ -6,6 +6,7 @@ import com.lgoncalves.booking_service.dtos.BookingDTO;
 import com.lgoncalves.booking_service.dtos.FlightDTO;
 import com.lgoncalves.booking_service.dtos.UserDTO;
 import com.lgoncalves.booking_service.entities.BookingEntity;
+import com.lgoncalves.booking_service.exceptions.booking.ReserveAlreadyRegisteredException;
 import com.lgoncalves.booking_service.exceptions.flight.FlightMaxCapacityException;
 import com.lgoncalves.booking_service.exceptions.flight.FlightNotFoundException;
 import com.lgoncalves.booking_service.exceptions.user.UserNotFoundException;
@@ -14,14 +15,11 @@ import com.lgoncalves.booking_service.services.interfaces.IBookingService;
 import feign.FeignException;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Log4j2
@@ -58,10 +56,18 @@ public class BookingServiceImpl implements IBookingService {
             throw new RuntimeException("Error desconocido al obtener el usuario: " + responseEntity2.getStatusCode());
         }
 
+        List<BookingEntity> bookingEntities = bookingRepository.findByUsuarioIdAndVueloId(bookingDTO.getUsuario_id(), bookingDTO.getVuelo_id());
+        if (!bookingEntities.isEmpty()) throw new ReserveAlreadyRegisteredException("Ya se ha registrado anteriormente esta reserva");
+
         BookingEntity bookingEntity = new BookingEntity();
         bookingEntity.setDTO(bookingDTO);
-        ResponseEntity<FlightDTO> responseEntity3 = this.flightsREST.decFlightDisponibility(bookingDTO.getVuelo_id());
-        if(!responseEntity3.getStatusCode().is2xxSuccessful()) throw new FlightMaxCapacityException("El vuelo ha llegado a su máxima capacidad");
+        try {
+            ResponseEntity<FlightDTO> responseEntity3 = this.flightsREST.decFlightDisponibility(bookingDTO.getVuelo_id(), false);
+            if (!responseEntity3.getStatusCode().is2xxSuccessful())
+                throw new FlightMaxCapacityException("El vuelo ha llegado a su máxima capacidad");
+        }catch(FeignException.Conflict ex){
+            throw new FlightMaxCapacityException("El vuelo ha llegado a su máxima capacidad");
+        }
         return this.bookingRepository.save(bookingEntity).getDTO();
 
     }
@@ -77,6 +83,7 @@ public class BookingServiceImpl implements IBookingService {
         BookingEntity bookingEntity = bookingRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Booking no encontrado"));
         bookingEntity.setEstado("Cancelado");
+        ResponseEntity<FlightDTO> responseEntity3 = this.flightsREST.decFlightDisponibility(bookingEntity.getDTO().getVuelo_id(), true);
         bookingRepository.save(bookingEntity);
     }
 

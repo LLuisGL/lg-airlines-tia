@@ -76,12 +76,12 @@ public class FlightServiceImpl implements IFlightService {
     }
 
     @Override
-    public FlightDTO decrementarDisponibilidad(String vuelo_id) {
+    public FlightDTO cambiarDisponibilidad(String vuelo_id, boolean isIncrement) {
         FlightEntity flightEntity = flightRepository.findById(vuelo_id).orElseThrow(() -> new FlightNotFoundException("Vuelo no encontrado"));
 
-        if(flightEntity.getDisponibilidad() <= 0 ) throw new FlightMaxCapacityException("El vuelo ya no cuenta con disponibilidad.");
+        if(flightEntity.getDisponibilidad() <= 0 && !isIncrement) throw new FlightMaxCapacityException("El vuelo ya no cuenta con disponibilidad.");
 
-        flightEntity.setDisponibilidad(flightEntity.getDisponibilidad() - 1);
+        flightEntity.setDisponibilidad(flightEntity.getDisponibilidad() + (isIncrement ? 1 : -1));
         return this.flightRepository.save(flightEntity).getDTO();
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
@@ -15,7 +16,7 @@ public interface IFlightsREST {
     ResponseEntity<FlightDTO> getById(@PathVariable String id);
 
 
-    @GetMapping("/decrementar/{vuelo_id}")
-    ResponseEntity<FlightDTO> decFlightDisponibility(@PathVariable String vuelo_id);
+    @GetMapping("/cambiarDisponibilidad/{vuelo_id}")
+    ResponseEntity<FlightDTO> decFlightDisponibility(@PathVariable String vuelo_id, @RequestParam boolean isIncrement);
 
 }

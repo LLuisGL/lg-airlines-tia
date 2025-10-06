@@ -12,5 +12,6 @@ import java.util.List;
 public interface IBookingRepository extends JpaRepository<BookingEntity, String> {
 
     List<BookingEntity> findByUsuarioId(String usuario_id);
+    List<BookingEntity> findByUsuarioIdAndVueloId(String usuario_id, String vuelo_id);
 
 }

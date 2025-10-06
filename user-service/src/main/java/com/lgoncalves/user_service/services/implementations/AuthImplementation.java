@@ -9,6 +9,7 @@ import com.lgoncalves.user_service.entities.TokenEntity;
 import com.lgoncalves.user_service.entities.UserEntity;
 import com.lgoncalves.user_service.exceptions.auth.InvalidCorreoException;
 import com.lgoncalves.user_service.exceptions.auth.InvalidLoginException;
+import com.lgoncalves.user_service.exceptions.user.UserAlreadyRegisteredException;
 import com.lgoncalves.user_service.repositories.ITokenRepository;
 import com.lgoncalves.user_service.repositories.IUserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +17,11 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Log4j2
 @Service
@@ -37,6 +38,10 @@ public class AuthImplementation {
         UserEntity userEntity = new UserEntity();
 
         if (!isValidEmail(request.correo())) throw new InvalidCorreoException("Introduzca un correo válido.");
+
+        Optional<UserEntity> findEmail = userRepository.findByCorreo(request.correo());
+
+        if(findEmail.isPresent()) throw new UserAlreadyRegisteredException("El email que coloco ya está registrado.");
 
         UserDTO usuarioDTO = UserDTO.builder()
                 .nombre(request.nombre())

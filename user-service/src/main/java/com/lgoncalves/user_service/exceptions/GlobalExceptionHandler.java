@@ -2,6 +2,7 @@ package com.lgoncalves.user_service.exceptions;
 
 import com.lgoncalves.user_service.exceptions.auth.InvalidCorreoException;
 import com.lgoncalves.user_service.exceptions.auth.InvalidLoginException;
+import com.lgoncalves.user_service.exceptions.user.UserAlreadyRegisteredException;
 import com.lgoncalves.user_service.exceptions.user.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,11 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(UserAlreadyRegisteredException.class)
+    public ResponseEntity<?> handleUserAlreadyRegistered(UserAlreadyRegisteredException ex) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "El correo ya se encuentra registrado.");
+    }
 
     @ExceptionHandler(InvalidLoginException.class)
     public ResponseEntity<?> handleInvalidLogin(InvalidLoginException ex) {

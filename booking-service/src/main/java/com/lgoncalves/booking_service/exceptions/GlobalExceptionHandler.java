@@ -1,5 +1,6 @@
 package com.lgoncalves.booking_service.exceptions;
 
+import com.lgoncalves.booking_service.exceptions.booking.ReserveAlreadyRegisteredException;
 import com.lgoncalves.booking_service.exceptions.flight.FlightMaxCapacityException;
 import com.lgoncalves.booking_service.exceptions.flight.FlightNotFoundException;
 import com.lgoncalves.booking_service.exceptions.auth.InvalidCorreoException;
@@ -16,6 +17,12 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(ReserveAlreadyRegisteredException.class)
+    public ResponseEntity<?> handleReserveAlreadyRegistered(ReserveAlreadyRegisteredException ex) {
+        return buildErrorResponse(HttpStatus.NOT_ACCEPTABLE, "Ya se ha reservado en este vuelo a nombre de esta misma persona.");
+    }
+
 
     @ExceptionHandler(InvalidLoginException.class)
     public ResponseEntity<?> handleInvalidLogin(InvalidLoginException ex) {
@@ -39,7 +46,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(FlightMaxCapacityException.class)
     public ResponseEntity<?> handleFlightMaxCapacity(FlightMaxCapacityException ex) {
-        return buildErrorResponse(HttpStatus.CONFLICT, "El vuelo ya no cuenta con disponibilidad.");
+        return buildErrorResponse(HttpStatus.NOT_ACCEPTABLE, "El vuelo ya no cuenta con disponibilidad.");
     }
 
     private ResponseEntity<?> buildErrorResponse(HttpStatus status, String message) {
